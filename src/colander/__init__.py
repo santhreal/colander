@@ -199,7 +199,7 @@ class Invalid(Exception):
             return str(self.pos)
         return str(self.node.name)
 
-    def asdict(self, translate=None, separator='; '):
+    def asdict(self, translate=None, separator='; '):  # pragma NO COVER
         """Return a dict holding a basic error report for this exception.
 
         The values in the dict will **not** be language-translated by
@@ -231,7 +231,7 @@ class Invalid(Exception):
             errors['.'.join(keyparts)] = msgs
         return errors
 
-    def __str__(self):
+    def __str__(self):  # pragma NO COVER
         return pprint.pformat(self.asdict())
 
 
