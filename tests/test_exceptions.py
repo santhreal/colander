@@ -3,9 +3,16 @@ from unittest import mock
 import pytest
 
 
-@pytest.fixture(scope="function", params=[
-    "String", "Integer", "Float", "Decimal", "Boolean",
-])
+@pytest.fixture(
+    scope="function",
+    params=[
+        "String",
+        "Integer",
+        "Float",
+        "Decimal",
+        "Boolean",
+    ],
+)
 def non_positional_node(request):
     import colander
 
@@ -22,12 +29,14 @@ def positional_node(request):
 
 
 @pytest.mark.parametrize(
-    "msg, expected", [
-    ((), []),
-    ([], []),
-    (None, []),
-    ("MESSAGE", ["MESSAGE"]),
-])
+    "msg, expected",
+    [
+        ((), []),
+        ([], []),
+        (None, []),
+        ("MESSAGE", ["MESSAGE"]),
+    ],
+)
 def test_invalid_messages(msg, expected):
     import colander
 
@@ -49,7 +58,7 @@ def test_invalid_add_w_non_positional_node(non_positional_node, pos):
         colander.SchemaNode(
             name="child",
             typ=colander.String(),
-        )
+        ),
     )
     invalid = colander.Invalid(node)
     child_exc = colander.Invalid(object(), "testing")
@@ -76,7 +85,7 @@ def test_invalid_add_w_positional_node(positional_node, pos):
         colander.SchemaNode(
             name="child",
             typ=colander.String(),
-        )
+        ),
     )
     invalid = colander.Invalid(node)
     child_exc = colander.Invalid(object(), "testing")
@@ -95,12 +104,14 @@ def test_invalid_add_w_positional_node(positional_node, pos):
 
 
 @pytest.mark.parametrize(
-    "name, pos_or_raises", [
-    ("zero", 0),
-    ("one", 1),
-    ("two", 2),
-    ("nonesuch", KeyError),
-])
+    "name, pos_or_raises",
+    [
+        ("zero", 0),
+        ("one", 1),
+        ("two", 2),
+        ("nonesuch", KeyError),
+    ],
+)
 def test_invalid___setitem__(name, pos_or_raises):
     import colander
 
@@ -230,8 +241,8 @@ def test_invalid__keyname_w_positional():
     assert invalid._keyname() == "42"
 
 
-#def test_invalid_asdict_blah_blah_not_gonna_do_it()
-#def test_invalid___str___not_gonna_do_it()
+# def test_invalid_asdict_blah_blah_not_gonna_do_it()
+# def test_invalid___str___not_gonna_do_it()
 
 
 def test_unsupportedfields___init___default():

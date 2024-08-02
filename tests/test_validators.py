@@ -10,37 +10,40 @@ def _assert_trstring(found, expected):
     assert isinstance(found, translationstring.TranslationString)
     assert str(found) == expected
 
+
 def test_all___call___w_empty_subs():
     import colander
-    
+
     node = object()
     value = "testing"
     all_ = colander.All()
     assert list(all_.validators) == []
 
-    all_(node, value)   # no raise
+    all_(node, value)  # no raise
 
 
 def test_all___call___w_one_sub_wo_raise():
     import colander
-    
+
     node = object()
     value = "testing"
     validator = mock.Mock(spec_set=(), return_value=None)
     all_ = colander.All(validator)
     assert list(all_.validators) == [validator]
 
-    all_(node, value)   # no raise
+    all_(node, value)  # no raise
 
     validator.assert_called_once_with(node, value)
 
+
 def test_all___call___w_one_sub_w_raise():
     import colander
-    
+
     node = object()
     value = "testing"
     validator = mock.Mock(
-        spec_set=(), side_effect=colander.Invalid(node, "testing"),
+        spec_set=(),
+        side_effect=colander.Invalid(node, "testing"),
     )
     all_ = colander.All(validator)
     assert list(all_.validators) == [validator]
@@ -56,12 +59,13 @@ def test_all___call___w_one_sub_w_raise():
 
 def test_all___call___w_multi_subs_w_one_raises():
     import colander
-    
+
     node = object()
     value = "testing"
     validator_1 = mock.Mock(spec_set=(), return_value=None)
     validator_2 = mock.Mock(
-        spec_set=(), side_effect=colander.Invalid(node, "testing"),
+        spec_set=(),
+        side_effect=colander.Invalid(node, "testing"),
     )
     all_ = colander.All(validator_1, validator_2)
     assert list(all_.validators) == [validator_1, validator_2]
@@ -78,16 +82,16 @@ def test_all___call___w_multi_subs_w_one_raises():
 
 def test_all___call___w_multi_subs_w_many_raises():
     import colander
-    
+
     node = object()
     value = "testing"
     validator_1 = mock.Mock(
-        spec_set=(), side_effect=colander.Invalid(
-            node, ["testing 1a", "testing 1b"]
-        ),
+        spec_set=(),
+        side_effect=colander.Invalid(node, ["testing 1a", "testing 1b"]),
     )
     validator_2 = mock.Mock(
-        spec_set=(), side_effect=colander.Invalid(node, "testing 2"),
+        spec_set=(),
+        side_effect=colander.Invalid(node, "testing 2"),
     )
     all_ = colander.All(validator_1, validator_2)
     assert list(all_.validators) == [validator_1, validator_2]
@@ -104,36 +108,37 @@ def test_all___call___w_multi_subs_w_many_raises():
 
 def test_any___call___w_empty_subs():
     import colander
-    
+
     node = object()
     value = "testing"
     any_ = colander.Any()
     assert list(any_.validators) == []
 
-    any_(node, value)   # no raise
+    any_(node, value)  # no raise
 
 
 def test_any___call___w_one_sub_wo_raise():
     import colander
-    
+
     node = object()
     value = "testing"
     validator = mock.Mock(spec_set=(), return_value=None)
     any_ = colander.Any(validator)
     assert list(any_.validators) == [validator]
 
-    any_(node, value)   # no raise
+    any_(node, value)  # no raise
 
     validator.assert_called_once_with(node, value)
 
 
 def test_any___call___w_one_sub_w_raise():
     import colander
-    
+
     node = object()
     value = "testing"
     validator = mock.Mock(
-        spec_set=(), side_effect=colander.Invalid(node, "testing"),
+        spec_set=(),
+        side_effect=colander.Invalid(node, "testing"),
     )
     any_ = colander.Any(validator)
     assert list(any_.validators) == [validator]
@@ -147,12 +152,13 @@ def test_any___call___w_one_sub_w_raise():
 
 def test_any___call___w_multi_subs_w_one_raises():
     import colander
-    
+
     node = object()
     value = "testing"
     validator_1 = mock.Mock(spec_set=(), return_value=None)
     validator_2 = mock.Mock(
-        spec_set=(), side_effect=colander.Invalid(node, "testing"),
+        spec_set=(),
+        side_effect=colander.Invalid(node, "testing"),
     )
     any_ = colander.Any(validator_1, validator_2)
     assert list(any_.validators) == [validator_1, validator_2]
@@ -162,18 +168,19 @@ def test_any___call___w_multi_subs_w_one_raises():
     validator_1.assert_called_once_with(node, value)
     validator_2.assert_called_once_with(node, value)
 
+
 def test_any___call___w_multi_subs_w_all_raise():
     import colander
-    
+
     node = object()
     value = "testing"
     validator_1 = mock.Mock(
-        spec_set=(), side_effect=colander.Invalid(
-            node, ["testing 1a", "testing 1b"]
-        ),
+        spec_set=(),
+        side_effect=colander.Invalid(node, ["testing 1a", "testing 1b"]),
     )
     validator_2 = mock.Mock(
-        spec_set=(), side_effect=colander.Invalid(node, "testing 2"),
+        spec_set=(),
+        side_effect=colander.Invalid(node, "testing 2"),
     )
     any_ = colander.Any(validator_1, validator_2)
     assert list(any_.validators) == [validator_1, validator_2]
@@ -406,6 +413,7 @@ def test_dataurl___init__w_defaults():
     _assert_trstring(durl.mimetype_err, "Invalid MIME type")
     _assert_trstring(durl.base64_err, "Invalid Base64 encoded data")
 
+
 def test_dataurl___init__w_explicit():
     import colander
 
@@ -420,14 +428,17 @@ def test_dataurl___init__w_explicit():
     assert durl.base64_err == "Bad base64"
 
 
-@pytest.mark.parametrize("bad_url", [
-    "",
-    "foo",
-    "data:foo"
-    "data:foo;base64"
-    "data:foo;base32,"
-    "data:text/plain;charset=ASCII,foo",
-])
+@pytest.mark.parametrize(
+    "bad_url",
+    [
+        "",
+        "foo",
+        "data:foo"
+        "data:foo;base64"
+        "data:foo;base32,"
+        "data:text/plain;charset=ASCII,foo",
+    ],
+)
 def test_dataurl___call__miss_bad_url(bad_url):
     import colander
 
@@ -441,10 +452,13 @@ def test_dataurl___call__miss_bad_url(bad_url):
     assert exc.value.msg == "Bad URL"
 
 
-@pytest.mark.parametrize("bad_mt", [
-    "data:no/mime,foo",
-    "data:no-mime;base64,Zm9vCg==",
-])
+@pytest.mark.parametrize(
+    "bad_mt",
+    [
+        "data:no/mime,foo",
+        "data:no-mime;base64,Zm9vCg==",
+    ],
+)
 def test_dataurl___call__miss_bad_mimetype(bad_mt):
     import colander
 
@@ -458,10 +472,13 @@ def test_dataurl___call__miss_bad_mimetype(bad_mt):
     assert exc.value.msg == "Bad MIMEtype"
 
 
-@pytest.mark.parametrize("bad_b64", [
-    "data:;base64,Zm9vCg",
-    "data:text/plain;base64,Zm*vCg==",
-])
+@pytest.mark.parametrize(
+    "bad_b64",
+    [
+        "data:;base64,Zm9vCg",
+        "data:text/plain;base64,Zm*vCg==",
+    ],
+)
 def test_dataurl___call__miss_bad_base64(bad_b64):
     import colander
 
@@ -473,7 +490,6 @@ def test_dataurl___call__miss_bad_base64(bad_b64):
 
     assert exc.value.node is node
     assert exc.value.msg == "Bad b64"
-
 
 
 def test_dataurl___call__w_invalid_mimetype_and_b64data():
@@ -513,16 +529,19 @@ def test_range___init___w_explicit():
     assert range_.max_err == "Max err"
 
 
-@pytest.mark.parametrize("min_, max_, raises", [
-    (None, None, False),
-    (-5, None, False),
-    (45, None, True),
-    (None, 45, False),
-    (None, 41, True),
-    (-5, 45, False),
-    (44, 55, True),
-    (34, 35, True),
-])
+@pytest.mark.parametrize(
+    "min_, max_, raises",
+    [
+        (None, None, False),
+        (-5, None, False),
+        (45, None, True),
+        (None, 45, False),
+        (None, 41, True),
+        (-5, 45, False),
+        (44, 55, True),
+        (34, 35, True),
+    ],
+)
 def test_range___call___w_min_none_w_max_none(min_, max_, raises):
     import colander
 
@@ -560,16 +579,19 @@ def test_length___init___w_explicit():
     assert length.max_err == "Max err"
 
 
-@pytest.mark.parametrize("min_, max_, raises", [
-    (None, None, False),
-    (0, None, False),
-    (45, None, True),
-    (None, 15, False),
-    (None, 4, True),
-    (0, 15, False),
-    (10, 15, True),
-    (0, 4, True),
-])
+@pytest.mark.parametrize(
+    "min_, max_, raises",
+    [
+        (None, None, False),
+        (0, None, False),
+        (45, None, True),
+        (None, 15, False),
+        (None, 4, True),
+        (0, 15, False),
+        (10, 15, True),
+        (0, 4, True),
+    ],
+)
 def test_length___call__(min_, max_, raises):
     import colander
 
@@ -666,6 +688,7 @@ def test_containsonly___init__():
 
     assert list(containsonly.choices) == ["a", "b", "c"]
 
+
 def test_containsonly___call___w_hit():
     import colander
 
@@ -673,6 +696,7 @@ def test_containsonly___call___w_hit():
     node = object()
 
     containsonly(node, set(["a", "b"]))  # no raise
+
 
 def test_containsonly___call___w_miss():
     import colander
@@ -724,13 +748,16 @@ def test_luhnok_hit():
         colander.luhnok(node, value)  # no faise
 
 
-@pytest.mark.parametrize("value, checksum, raises", [
-    ("ABC", None, ValueError),
-    ("", 0, False),
-    ("10", 2, False),
-    ("100", 1, False),
-    ("4111111111111111", 30, False),
-])
+@pytest.mark.parametrize(
+    "value, checksum, raises",
+    [
+        ("ABC", None, ValueError),
+        ("", 0, False),
+        ("10", 2, False),
+        ("100", 1, False),
+        ("4111111111111111", 30, False),
+    ],
+)
 def test__luhnok(value, checksum, raises):
     import colander
 
@@ -739,6 +766,7 @@ def test__luhnok(value, checksum, raises):
             colander._luhnok(value)
     else:
         assert colander._luhnok(value) == checksum
+
 
 # def test__luhnok_w_.....
 
