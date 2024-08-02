@@ -102,7 +102,8 @@ class TestInvalid(unittest.TestCase):
 
     def test_asdict_with_all_validator(self):
         # see https://github.com/Pylons/colander/pull/27
-        from colander import All, Positional
+        from colander import All
+        from colander import Positional
 
         node1 = DummySchemaNode(None, 'node1')
         node2 = DummySchemaNode(Positional(), 'node2')
@@ -1610,7 +1611,8 @@ class TestSequence(unittest.TestCase):
         return Sequence(**kw)
 
     def test_alias(self):
-        from colander import Seq, Sequence
+        from colander import Seq
+        from colander import Sequence
 
         self.assertEqual(Seq, Sequence)
 
@@ -1778,7 +1780,8 @@ class TestSequence(unittest.TestCase):
         self.assertEqual(typ.get_value(node1, appstruct, '1.0'), 3)
 
     def test_cstruct_children_cstruct_is_null(self):
-        from colander import SequenceItems, null
+        from colander import SequenceItems
+        from colander import null
 
         typ = self._makeOne()
         result = typ.cstruct_children(None, null)
@@ -1799,7 +1802,8 @@ class TestString(unittest.TestCase):
         return String(encoding, allow_empty)
 
     def test_alias(self):
-        from colander import Str, String
+        from colander import Str
+        from colander import String
 
         self.assertEqual(Str, String)
 
@@ -1932,7 +1936,8 @@ class TestInteger(unittest.TestCase):
         return Integer(strict=strict)
 
     def test_alias(self):
-        from colander import Int, Integer
+        from colander import Int
+        from colander import Integer
 
         self.assertEqual(Int, Integer)
 
@@ -2228,7 +2233,8 @@ class TestBoolean(unittest.TestCase):
         return Boolean()
 
     def test_alias(self):
-        from colander import Bool, Boolean
+        from colander import Bool
+        from colander import Boolean
 
         self.assertEqual(Bool, Boolean)
 
@@ -3350,7 +3356,9 @@ class TestSchemaNode(unittest.TestCase):
         self.assertEqual(e.msg, 'Wrong')
 
     def test_deserialize_with_unbound_validator(self):
-        from colander import Invalid, UnboundDeferredError, deferred
+        from colander import Invalid
+        from colander import UnboundDeferredError
+        from colander import deferred
 
         typ = DummyType()
 
@@ -3365,7 +3373,8 @@ class TestSchemaNode(unittest.TestCase):
         self.assertRaises(Invalid, node.bind(foo='foo').deserialize, None)
 
     def test_deserialize_value_is_null_no_missing(self):
-        from colander import Invalid, null
+        from colander import Invalid
+        from colander import null
 
         typ = DummyType()
         node = self._makeOne(typ)
@@ -3412,7 +3421,9 @@ class TestSchemaNode(unittest.TestCase):
         self.assertEqual(node.deserialize(null), null)
 
     def test_deserialize_appstruct_deferred(self):
-        from colander import Invalid, deferred, null
+        from colander import Invalid
+        from colander import deferred
+        from colander import null
 
         typ = DummyType()
         node = self._makeOne(typ)
@@ -3449,7 +3460,8 @@ class TestSchemaNode(unittest.TestCase):
         self.assertEqual(node.serialize(), 'abc')
 
     def test_serialize_default_deferred(self):
-        from colander import deferred, null
+        from colander import deferred
+        from colander import null
 
         typ = DummyType()
         node = self._makeOne(typ)
@@ -4039,7 +4051,8 @@ class TestDeferred(unittest.TestCase):
 
 class TestSchema(unittest.TestCase):
     def test_alias(self):
-        from colander import MappingSchema, Schema
+        from colander import MappingSchema
+        from colander import Schema
 
         self.assertEqual(Schema, MappingSchema)
 

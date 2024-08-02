@@ -8,9 +8,10 @@ import itertools
 import mimetypes
 import pprint
 import re
-import translationstring
 import types
 import warnings
+
+import translationstring
 
 _ = translationstring.TranslationStringFactory('colander')
 
