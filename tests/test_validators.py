@@ -742,6 +742,7 @@ def test_luhnok_hit():
         ("10", 2, False),
         ("100", 1, False),
         ("4111111111111111", 30, False),
+        ("99999999999999999999999", 207, False),
     ],
 )
 def test__luhnok(value, checksum, raises):
@@ -753,7 +754,5 @@ def test__luhnok(value, checksum, raises):
     else:
         assert colander._luhnok(value) == checksum
 
-
-# def test__luhnok_w_.....
 
 # def test__make_url_regex_src # CAN'T, it is deleted after making URL_REGEX!
