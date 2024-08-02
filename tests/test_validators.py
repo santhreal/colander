@@ -198,9 +198,6 @@ def test_any___call___w_multi_subs_w_all_raise():
 def test_function___init___w_msg_none_and_message_none():
     import colander
 
-    node = object()
-    value = "testing"
-
     def func(node, value):
         pass
 
@@ -211,9 +208,6 @@ def test_function___init___w_msg_none_and_message_none():
 
 def test_function___init___w_msg_set_and_message_none():
     import colander
-
-    node = object()
-    value = "testing"
 
     def func(node, value):
         pass
@@ -226,9 +220,6 @@ def test_function___init___w_msg_set_and_message_none():
 def test_function___init___w_msg_set_and_message_set():
     import colander
 
-    node = object()
-    value = "testing"
-
     def func(node, value):
         pass
 
@@ -238,9 +229,6 @@ def test_function___init___w_msg_set_and_message_set():
 
 def test_function___init___w_msg_none_and_message_set():
     import colander
-
-    node = object()
-    value = "testing"
 
     def func(node, value):
         pass
@@ -364,7 +352,6 @@ def test_regex___call___hit():
     import colander
 
     node = object()
-    value = "Testing"
     pattern = "^Testing$"
     compiled = re.compile(pattern)
     rgx = colander.Regex(compiled, "Should not raise")
@@ -376,7 +363,6 @@ def test_regex___call___miss():
     import colander
 
     node = object()
-    value = "Testing"
     pattern = "^Not Testing$"
     compiled = re.compile(pattern)
     rgx = colander.Regex(compiled, "Should raise")

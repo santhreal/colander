@@ -1,6 +1,3 @@
-import pytest
-
-
 def test__required___reduce__():
     from colander import _required
 
@@ -12,7 +9,6 @@ def test__required___reduce__():
 def test_required_pickling():
     import pickle
 
-    from colander import _required
     from colander import required as the_singleton
 
     pickled = pickle.dumps(the_singleton)
