@@ -756,3 +756,139 @@ def test__luhnok(value, checksum, raises):
 
 
 # def test__make_url_regex_src # CAN'T, it is deleted after making URL_REGEX!
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "not-a-url",
+        "file:///this/is/a/file.jpg",
+        "http://.mysite.com",
+        "http://www.mysite-.com",
+        "http://www.-mysite.com",
+        "http://mysite",
+        "http://mysite.com:/path",
+        "http://mysite.com:aaa",
+        "http://mysite.com ",
+    ],
+)
+def test_url_failures(value):
+    import colander
+
+    node = object()
+
+    with pytest.raises(colander.Invalid) as exc:
+        colander.url(node, value)
+
+    assert exc.value.node is node
+    assert exc.value.messages() == ["Must be a URL"]
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "http://example.com",
+        "http://www.mysite.com/(tttttttttttttttttttttt.jpg",
+        "www.mysite.com",
+        "http://user@mysite.com",
+        "http://user:@mysite.com",
+        "http://user:password@mysite.com",
+        "http://user:pass%40word@mysite.com",
+        "http://[2001:db8::0]/",
+        "http://192.0.2.1/",
+        "http://www.mysite.com.",
+        "http://www.my-site.com",
+        "http://xn--vck8cuc4a.com",
+        str(
+            b"http://\xe3\x82\xb5\xe3\x83\xb3\xe3\x83\x97\xe3\x83\xab.com",
+            "utf-8",
+        ),
+        "http://localhost/",
+        "http://mysite.com:8080",
+        "http://mysite.com/path?k=v",
+        "http://mysite.com/path#fragment",
+        "http://mysite.com/path?k=v#fragment",
+        "http://mysite.com?k=v",
+        "http://mysite.com#fragment",
+    ],
+)
+def test_url_successes(value):
+    import colander
+
+    node = object()
+
+    assert colander.url(node, value) is None
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "not-a-uri",
+        "file://",
+    ],
+)
+def test_file_uri_failures(value):
+    import colander
+
+    node = object()
+
+    with pytest.raises(colander.Invalid) as exc:
+        colander.file_uri(node, value)
+
+    assert exc.value.node is node
+    assert exc.value.messages() == ["Must be a file:// URI scheme"]
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "file:///",
+        "file:///this/is/a/file.jpg",
+        "file:///c:/is/a/file.jpg",
+    ],
+)
+def test_file_uri_successes(value):
+    import colander
+
+    node = object()
+
+    assert colander.file_uri(node, value) is None
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "not-a-uuid",
+        "123zzzzz-uuuu-zzzz-uuuu-42665544zzzz",
+        "88888888-333-4444-333-cccccccccccc",
+        "urn:abcd:{123e4567-e89b-12d3-a456-426655440000}",
+    ],
+)
+def test_uuid_failures(value):
+    import colander
+
+    node = object()
+
+    with pytest.raises(colander.Invalid) as exc:
+        colander.uuid(node, value)
+
+    assert exc.value.node is node
+    assert exc.value.messages() == ["Invalid UUID string"]
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "123e4567e89b12d3a456426655440000",
+        "123e4567-e89b-12d3-a456-426655440000",
+        "123E4567-E89B-12D3-A456-426655440000",
+        "{123e4567-e89b-12d3-a456-426655440000}",
+        "urn:uuid:{123e4567-e89b-12d3-a456-426655440000}",
+    ],
+)
+def test_uuid_successes(value):
+    import colander
+
+    node = object()
+
+    assert colander.uuid(node, value) is None
