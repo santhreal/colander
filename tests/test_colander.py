@@ -2361,6 +2361,22 @@ class TestGlobalObject(unittest.TestCase):
         )
         self.assertEqual(result, self.__class__)
 
+    def test__zope_dottedname_style_too_many_leading_dots(self):
+        # More leading dots than package depth must raise Invalid, not IndexError.
+        typ = self._makeOne(package=colander)
+        node = DummySchemaNode(None)
+        for name in ('..', '...', '....'):
+            e = invalid_exc(typ._zope_dottedname_style, node, name)
+            self.assertEqual(
+                e.msg.interpolate(),
+                'relative name "%s" has too many leading dots' % name,
+            )
+        e = invalid_exc(typ.deserialize, node, '..')
+        self.assertEqual(
+            e.msg.interpolate(),
+            'relative name ".." has too many leading dots',
+        )
+
     def test__zope_dottedname_style_resolve_relative_is_dot(self):
 
         typ = self._makeOne(package=tests)
