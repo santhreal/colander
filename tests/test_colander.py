@@ -1609,6 +1609,28 @@ class TestSequence(unittest.TestCase):
 
         return Sequence(**kw)
 
+    def test_impl_requires_child_node(self):
+        node = colander.SchemaNode(colander.Sequence())
+        e = invalid_exc(lambda: node.serialize([]))
+        self.assertEqual(
+            e.msg, 'Sequence schemas must have exactly one child node'
+        )
+        e = invalid_exc(lambda: node.deserialize([]))
+        self.assertEqual(
+            e.msg, 'Sequence schemas must have exactly one child node'
+        )
+        typ = self._makeOne()
+        empty = DummySchemaNode(None)
+        empty.children = []
+        e = invalid_exc(typ.deserialize, empty, ('a',))
+        self.assertEqual(
+            e.msg, 'Sequence schemas must have exactly one child node'
+        )
+        e = invalid_exc(typ.serialize, empty, ('a',))
+        self.assertEqual(
+            e.msg, 'Sequence schemas must have exactly one child node'
+        )
+
     def test_alias(self):
         from colander import Seq, Sequence
 
