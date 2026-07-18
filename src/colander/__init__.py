@@ -1848,19 +1848,10 @@ class GlobalObject(SchemaType):
                     )
                 module = module.split('.')
                 name.pop(0)
-                # Too many leading dots (above package root) must not IndexError.
-                while name and not name[0]:
-                    if not module:
-                        raise Invalid(
-                            node,
-                            _(
-                                'relative name "${val}" has too many leading dots',
-                                mapping={'val': value},
-                            ),
-                        )
+                while name and not name[0] and module:
                     module.pop()
                     name.pop(0)
-                if not name:
+                if not name or not name[0]:
                     raise Invalid(
                         node,
                         _(
