@@ -35,6 +35,10 @@ jobs:
                       architecture: x86
                     - os: "macos-13"
                       architecture: x86
+                    # setup-python has no Windows PyPy 3.8 x86 builds
+                    - os: "windows-latest"
+                      py: "pypy-3.8"
+                      architecture: x86
         name: "Python: ${{ matrix.py }}-${{ matrix.architecture }} on ${{ matrix.os }}"
         runs-on: ${{ matrix.os }}
         steps:
