@@ -1,6 +1,9 @@
 2.1 (unreleased)
 ================
 
+- Raise ``colander.Invalid`` when a ``Sequence`` schema node has no child
+  instead of ``IndexError`` on serialize/deserialize.
+
 - Add support for Python 3.12.
 
 - Drop support for Python 3.7.
