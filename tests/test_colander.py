@@ -2377,6 +2377,24 @@ class TestGlobalObject(unittest.TestCase):
             'relative name ".." has too many leading dots',
         )
 
+    def test__zope_dottedname_style_too_many_dots_multi_segment_package(self):
+        # Multi-segment package is required to hit the empty-name exit after pops.
+        import tests.relative as relative_pkg
+
+        typ = self._makeOne(package=relative_pkg)
+        node = DummySchemaNode(None)
+        # tests.relative depth is 2; '..' exhausts module and leaves name empty.
+        e = invalid_exc(typ._zope_dottedname_style, node, '..')
+        self.assertEqual(
+            e.msg.interpolate(),
+            'relative name ".." has too many leading dots',
+        )
+        e = invalid_exc(typ.deserialize, node, '..')
+        self.assertEqual(
+            e.msg.interpolate(),
+            'relative name ".." has too many leading dots',
+        )
+
     def test__zope_dottedname_style_resolve_relative_is_dot(self):
 
         typ = self._makeOne(package=tests)
