@@ -1619,6 +1619,17 @@ class TestSequence(unittest.TestCase):
         self.assertEqual(
             e.msg, 'Sequence schemas must have exactly one child node'
         )
+        typ = self._makeOne()
+        empty = DummySchemaNode(None)
+        empty.children = []
+        e = invalid_exc(typ.deserialize, empty, ('a',))
+        self.assertEqual(
+            e.msg, 'Sequence schemas must have exactly one child node'
+        )
+        e = invalid_exc(typ.serialize, empty, ('a',))
+        self.assertEqual(
+            e.msg, 'Sequence schemas must have exactly one child node'
+        )
 
     def test_alias(self):
         from colander import Seq, Sequence

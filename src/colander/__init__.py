@@ -1283,7 +1283,7 @@ class Sequence(Positional, SchemaType):
 
         if not node.children:
             raise Invalid(
-                node, _('Sequence schemas must have exactly one child node')
+                node, 'Sequence schemas must have exactly one child node'
             )
         subnode = node.children[0]
         for num, subval in enumerate(value):
