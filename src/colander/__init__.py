@@ -1848,21 +1848,14 @@ class GlobalObject(SchemaType):
                     )
                 module = module.split('.')
                 name.pop(0)
-                # Climb parents; IndexError if we go above the package root.
+                # Climb parents; reject paths that go above the package root.
                 while name and not name[0]:
                     if not module:
-                        raise Invalid(
-                            node,
-                            _(
-                                'relative name "${val}" goes beyond package '
-                                'root',
-                                mapping={'val': value},
-                            ),
-                        )
+                        break
                     module.pop()
                     name.pop(0)
                 name = module + name
-                if not name:
+                if not name or not name[0]:
                     raise Invalid(
                         node,
                         _(
