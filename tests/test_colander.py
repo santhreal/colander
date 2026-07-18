@@ -2375,6 +2375,17 @@ class TestGlobalObject(unittest.TestCase):
             'relative name "." irresolveable without package',
         )
 
+    def test__zope_dottedname_style_too_many_leading_dots(self):
+        # More leading dots than package depth must raise Invalid, not IndexError.
+        typ = self._makeOne(package=colander)
+        node = DummySchemaNode(None)
+        for name in ('..', '...', '....'):
+            e = invalid_exc(typ._zope_dottedname_style, node, name)
+            self.assertEqual(
+                e.msg.interpolate(),
+                'relative name "%s" goes beyond package root' % name,
+            )
+
     def test_zope_dottedname_style_resolve_relative_nocurrentpackage(self):
         typ = self._makeOne()
         e = invalid_exc(typ._zope_dottedname_style, None, '.whatever')

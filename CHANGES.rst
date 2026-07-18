@@ -1,6 +1,9 @@
 2.1 (unreleased)
 ================
 
+- Raise ``colander.Invalid`` when a relative ``GlobalObject`` name has more
+  leading dots than the package depth instead of ``IndexError``.
+
 - Add support for Python 3.12.
 
 - Drop support for Python 3.7.

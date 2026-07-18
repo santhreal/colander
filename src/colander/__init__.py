@@ -1848,9 +1848,27 @@ class GlobalObject(SchemaType):
                     )
                 module = module.split('.')
                 name.pop(0)
-                while not name[0]:
+                # Too many leading dots must not IndexError above package root.
+                while name and not name[0]:
+                    if not module:
+                        raise Invalid(
+                            node,
+                            _(
+                                'relative name "${val}" goes beyond package '
+                                'root',
+                                mapping={'val': value},
+                            ),
+                        )
                     module.pop()
                     name.pop(0)
+                if not name:
+                    raise Invalid(
+                        node,
+                        _(
+                            'relative name "${val}" goes beyond package root',
+                            mapping={'val': value},
+                        ),
+                    )
                 name = module + name
 
         used = name.pop(0)
