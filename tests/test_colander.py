@@ -2386,6 +2386,28 @@ class TestGlobalObject(unittest.TestCase):
                 'relative name "%s" goes beyond package root' % name,
             )
 
+    def test__zope_dottedname_style_relative_parent_in_nested_package(self):
+        # Nested package: ".." must resolve to an ancestor, not raise beyond-root.
+        import sys
+        import types
+
+        a = types.ModuleType('coltest_a')
+        b = types.ModuleType('coltest_a.b')
+        c = types.ModuleType('coltest_a.b.c')
+        a.b = b
+        b.c = c
+        sys.modules['coltest_a'] = a
+        sys.modules['coltest_a.b'] = b
+        sys.modules['coltest_a.b.c'] = c
+        try:
+            typ = self._makeOne(package=c)
+            node = DummySchemaNode(None)
+            self.assertEqual(typ._zope_dottedname_style(node, '..'), a)
+        finally:
+            del sys.modules['coltest_a.b.c']
+            del sys.modules['coltest_a.b']
+            del sys.modules['coltest_a']
+
     def test_zope_dottedname_style_resolve_relative_nocurrentpackage(self):
         typ = self._makeOne()
         e = invalid_exc(typ._zope_dottedname_style, None, '.whatever')

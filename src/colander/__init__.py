@@ -1848,7 +1848,7 @@ class GlobalObject(SchemaType):
                     )
                 module = module.split('.')
                 name.pop(0)
-                # Too many leading dots must not IndexError above package root.
+                # Climb parents; IndexError if we go above the package root.
                 while name and not name[0]:
                     if not module:
                         raise Invalid(
@@ -1861,6 +1861,7 @@ class GlobalObject(SchemaType):
                         )
                     module.pop()
                     name.pop(0)
+                name = module + name
                 if not name:
                     raise Invalid(
                         node,
@@ -1869,7 +1870,6 @@ class GlobalObject(SchemaType):
                             mapping={'val': value},
                         ),
                     )
-                name = module + name
 
         used = name.pop(0)
         found = __import__(used)
