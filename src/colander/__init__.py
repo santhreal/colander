@@ -957,6 +957,8 @@ class Mapping(SchemaType):
 
     def flatten(self, node, appstruct, prefix='', listitem=False):
         result = {}
+        if appstruct is null:
+            return result
         if listitem:
             selfprefix = prefix
         else:
@@ -1096,6 +1098,8 @@ class Tuple(Positional, SchemaType):
 
     def flatten(self, node, appstruct, prefix='', listitem=False):
         result = {}
+        if appstruct is null:
+            return result
         if listitem:
             selfprefix = prefix
         else:
@@ -1362,6 +1366,8 @@ class Sequence(Positional, SchemaType):
 
     def flatten(self, node, appstruct, prefix='', listitem=False):
         result = {}
+        if appstruct is null:
+            return result
         if listitem:
             selfprefix = prefix
         else:

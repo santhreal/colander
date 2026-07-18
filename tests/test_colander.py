@@ -1124,6 +1124,14 @@ class TestMapping(unittest.TestCase):
         result = typ.flatten(node, {'a': 1, 'b': 2})
         self.assertEqual(result, {'node.appstruct': 2})
 
+    def test_flatten_null(self):
+        from colander import null
+
+        node = DummySchemaNode(None, name='node')
+        node.children = [DummySchemaNode(DummyType(), name='a')]
+        typ = self._makeOne()
+        self.assertEqual(typ.flatten(node, null), {})
+
     def test_flatten_listitem(self):
         node = DummySchemaNode(None, name='node')
         int1 = DummyType()
@@ -1370,6 +1378,17 @@ class TestTuple(unittest.TestCase):
         typ = self._makeOne()
         result = typ.flatten(node, (1, 2))
         self.assertEqual(result, {'node.appstruct': 2})
+
+    def test_flatten_null(self):
+        from colander import null
+
+        node = DummySchemaNode(None, name='node')
+        node.children = [
+            DummySchemaNode(DummyType(), name='a'),
+            DummySchemaNode(DummyType(), name='b'),
+        ]
+        typ = self._makeOne()
+        self.assertEqual(typ.flatten(node, null), {})
 
     def test_flatten_listitem(self):
         node = DummySchemaNode(None, name='node')
@@ -1731,6 +1750,14 @@ class TestSequence(unittest.TestCase):
         typ = self._makeOne()
         result = typ.flatten(node, [1, 2])
         self.assertEqual(result, {'node.0': 1, 'node.1': 2})
+
+    def test_flatten_null(self):
+        from colander import null
+
+        node = DummySchemaNode(None, name='node')
+        node.children = [DummySchemaNode(DummyType(), name='foo')]
+        typ = self._makeOne()
+        self.assertEqual(typ.flatten(node, null), {})
 
     def test_flatten_with_integer(self):
         from colander import Integer
@@ -4079,6 +4106,30 @@ class TestSchema(unittest.TestCase):
         expected = {'a': 'test'}
         result = node.deserialize(expected)
         self.assertEqual(result, expected)
+
+    def test_flatten_after_deserialize_drop_containers(self):
+        # missing=drop omits the key from the appstruct; flatten must not
+        # raise when Mapping walks that absent child as colander.null.
+        class Seq(colander.SequenceSchema):
+            item = colander.SchemaNode(colander.String())
+
+        class Tup(colander.TupleSchema):
+            x = colander.SchemaNode(colander.Int())
+            y = colander.SchemaNode(colander.Int())
+
+        class Inner(colander.MappingSchema):
+            z = colander.SchemaNode(colander.String())
+
+        class MySchema(colander.Schema):
+            title = colander.SchemaNode(colander.String())
+            items = Seq(missing=colander.drop)
+            point = Tup(missing=colander.drop)
+            inner = Inner(missing=colander.drop)
+
+        node = MySchema()
+        appstruct = node.deserialize({'title': 't'})
+        self.assertEqual(appstruct, {'title': 't'})
+        self.assertEqual(node.flatten(appstruct), {'title': 't'})
 
     def test_serialize_drop_default(self):
         class MySchema(colander.Schema):
