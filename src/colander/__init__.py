@@ -1283,7 +1283,7 @@ class Sequence(Positional, SchemaType):
 
         if not node.children:
             raise Invalid(
-                node, 'Sequence schemas must have exactly one child node'
+                node, _('Sequence schemas must have exactly one child node')
             )
         subnode = node.children[0]
         for num, subval in enumerate(value):
@@ -1852,27 +1852,9 @@ class GlobalObject(SchemaType):
                     )
                 module = module.split('.')
                 name.pop(0)
-                # Too many leading dots must not IndexError above package root.
-                while name and not name[0]:
-                    if not module:
-                        raise Invalid(
-                            node,
-                            _(
-                                'relative name "${val}" goes beyond package '
-                                'root',
-                                mapping={'val': value},
-                            ),
-                        )
+                while not name[0]:
                     module.pop()
                     name.pop(0)
-                if not name:
-                    raise Invalid(
-                        node,
-                        _(
-                            'relative name "${val}" goes beyond package root',
-                            mapping={'val': value},
-                        ),
-                    )
                 name = module + name
 
         used = name.pop(0)
