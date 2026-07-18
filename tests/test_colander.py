@@ -1657,6 +1657,13 @@ class TestSequence(unittest.TestCase):
         e = invalid_exc(typ.serialize, node, ('a',))
         self.assertEqual(e.msg, 'Sequence schemas must have exactly one child node')
 
+    def test_flatten_missing_child_node_raises_invalid(self):
+        typ = self._makeOne()
+        node = DummySchemaNode(None)
+        node.children = []
+        e = invalid_exc(typ.flatten, node, ('a',))
+        self.assertEqual(e.msg, 'Sequence schemas must have exactly one child node')
+
     def test_deserialize_no_null(self):
 
         typ = self._makeOne()

@@ -1267,6 +1267,13 @@ class Sequence(Positional, SchemaType):
                 node, _('"${val}" is not iterable', mapping={'val': value})
             )
 
+    def _child_node(self, node):
+        if not node.children:
+            raise Invalid(
+                node, 'Sequence schemas must have exactly one child node'
+            )
+        return node.children[0]
+
     def cstruct_children(self, node, cstruct):
         if cstruct is null:
             return SequenceItems([])
@@ -1281,11 +1288,7 @@ class Sequence(Positional, SchemaType):
         error = None
         result = []
 
-        if not node.children:
-            raise Invalid(
-                node, 'Sequence schemas must have exactly one child node'
-            )
-        subnode = node.children[0]
+        subnode = self._child_node(node)
         for num, subval in enumerate(value):
             if subval is drop or (
                 subval is null
@@ -1371,7 +1374,7 @@ class Sequence(Positional, SchemaType):
         else:
             selfprefix = f'{prefix}{node.name}.'
 
-        childnode = node.children[0]
+        childnode = self._child_node(node)
 
         for num, subval in enumerate(appstruct):
             subname = f'{selfprefix}{num}'
@@ -1385,7 +1388,7 @@ class Sequence(Positional, SchemaType):
         return result
 
     def unflatten(self, node, paths, fstruct):
-        only_child = node.children[0]
+        only_child = self._child_node(node)
         child_name = only_child.name
 
         def get_child(name):
@@ -1406,7 +1409,7 @@ class Sequence(Positional, SchemaType):
         if '.' in path:
             next_name, rest = path.split('.', 1)
             index = int(next_name)
-            next_node = node.children[0]
+            next_node = self._child_node(node)
             next_appstruct = appstruct[index]
             appstruct[index] = next_node.typ.set_value(
                 next_node, next_appstruct, rest, value
@@ -1420,7 +1423,7 @@ class Sequence(Positional, SchemaType):
         if '.' in path:
             name, rest = path.split('.', 1)
             index = int(name)
-            next_node = node.children[0]
+            next_node = self._child_node(node)
             return next_node.typ.get_value(next_node, appstruct[index], rest)
         return appstruct[int(path)]
 
