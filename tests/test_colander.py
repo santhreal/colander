@@ -1643,6 +1643,20 @@ class TestSequence(unittest.TestCase):
         result = typ.deserialize(node, ())
         self.assertEqual(result, [])
 
+    def test_deserialize_missing_child_node_raises_invalid(self):
+        typ = self._makeOne()
+        node = DummySchemaNode(None)
+        node.children = []
+        e = invalid_exc(typ.deserialize, node, ('a',))
+        self.assertEqual(e.msg, 'Sequence schemas must have exactly one child node')
+
+    def test_serialize_missing_child_node_raises_invalid(self):
+        typ = self._makeOne()
+        node = DummySchemaNode(None)
+        node.children = []
+        e = invalid_exc(typ.serialize, node, ('a',))
+        self.assertEqual(e.msg, 'Sequence schemas must have exactly one child node')
+
     def test_deserialize_no_null(self):
 
         typ = self._makeOne()
