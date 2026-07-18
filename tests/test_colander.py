@@ -1611,14 +1611,16 @@ class TestSequence(unittest.TestCase):
 
     def test_impl_requires_child_node(self):
         node = colander.SchemaNode(colander.Sequence())
-        e = invalid_exc(lambda: node.serialize([]))
-        self.assertEqual(
-            e.msg, 'Sequence schemas must have exactly one child node'
-        )
-        e = invalid_exc(lambda: node.deserialize([]))
-        self.assertEqual(
-            e.msg, 'Sequence schemas must have exactly one child node'
-        )
+        for meth, value in (
+            (node.serialize, []),
+            (node.deserialize, []),
+            (node.serialize, [1]),
+            (node.deserialize, [1]),
+        ):
+            e = invalid_exc(meth, value)
+            self.assertEqual(
+                e.msg, 'Sequence schemas must have exactly one child node'
+            )
         typ = self._makeOne()
         empty = DummySchemaNode(None)
         empty.children = []
